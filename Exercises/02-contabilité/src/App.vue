@@ -3,17 +3,18 @@
 <script setup>
 import { ref, computed } from "vue";
 
-const revenus = ref({
-  title: "",
-  montant: "",
-});
-const addNum = () => {
-  revenusList.value.push({ title: in.value, montant: });
+const revenus = ref (){
+  return{
+  items: [{title: ""}, { montant: ""}]
+  }
+  
+ 
 };
+
 const sorties = ref({
   title: "",
   montant: "",
-});
+};
 </script>
 
 <template>
