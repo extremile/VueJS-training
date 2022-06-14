@@ -1,19 +1,14 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, watch } from "vue";
 import Result from "./Result.vue";
-const darwins = ref([]);
-const darwin = ref();
+
+const darwin = ref([]);
 const selectDarwin = ref();
-onMounted(async () => {
-  const res = await fetch("http://localhost:8000/darwins");
-  darwins.value = await res.json();
-});
 
 watch(darwin, async () => {
-  const res = await fetch(
-    `http://localhost:8000/darwins/${darwin.value.name.death}`
-  );
-  selectDarwin.value = (await res.json())[0];
+  const res = await fetch(` http://localhost:8000/darwins?q=${darwin.value}`);
+  selectDarwin.value = await res.json();
+  console.log(selectDarwin.value);
 });
 </script>
 
@@ -38,13 +33,23 @@ watch(darwin, async () => {
         <label for="title">Rechercher</label>
         <input v-model="darwin" />
         <p
-          v-for="(element, index) in darwins"
+          v-for="(element, index) in selectDarwin"
           :key="index"
           :value="element"
         ></p>
 
-        {{ name }}
-        {{ death }}
+        {{ element.name }}
+        {{ element.death }}
+      </div>
+      <div
+        class="flex flex-col items-center sapce-y-4 mt-8"
+        v-if="selectDarwin"
+      >
+        <h2 class="font-semibold text-4xl">{{ selectDarwin.name }}</h2>
+        <h3 class="font-semibold text-2xl">
+          {{ selectDarwin.death }}
+        </h3>
+        <p class="text-2xl">{{ selectDarwin.description }}</p>
       </div>
     </main>
   </div>
