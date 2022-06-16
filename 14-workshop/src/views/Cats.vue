@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { useQuery } from "vue-query";
+import { useMutation, useQuery } from "vue-query";
 import { useRouter } from "vue-router";
 import api from "../api";
 
@@ -10,8 +10,18 @@ const { isLoading, data: cats } = useQuery(
   async () => (await api.get("/cats")).data
 );
 
+const { isLoading: isDelete, mutate: deleteC } = useMutation(
+  "cats",
+  async (id) => await api.delete(`/cats/${id}`)
+);
+
 const goToCats = (id) => {
   router.push({ path: `/chats/${id}` });
+};
+
+const deleteCat = (id) => {
+  deleteC(id);
+  router.go("/chats");
 };
 </script>
 
@@ -34,7 +44,9 @@ const goToCats = (id) => {
       </div>
       <div class="flex-grow flex items-center justify-end">
         <button class="btn primary" @click="goToCats(id)">Éditer</button>
-        <button class="btn cancel ml-4">Supprimer</button>
+        <button class="btn cancel ml-4" @click="deleteCat(id)">
+          Supprimer
+        </button>
       </div>
     </div>
   </div>

@@ -1,13 +1,24 @@
 <script setup>
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 const props = defineProps(["mode", "id", "name", "fact", "src"]);
 const emit = defineEmits(["onSubmit"]);
+
+const router = useRouter();
 
 const cat = ref({
   name: "",
   fact: "",
   src: "",
 });
+
+if (props.id) {
+  cat.value = {
+    name: props.name,
+    fact: props.fact,
+    src: props.src,
+  };
+}
 
 const catValidate = computed(() => {
   return !cat.value.name || !cat.value.fact || !cat.value.src;
@@ -17,7 +28,9 @@ const submit = () => {
   emit("onSubmit", cat);
 };
 
-const reset = () => {};
+const reset = () => {
+  router.push({ path: "/chats" });
+};
 </script>
 
 <template>
@@ -38,7 +51,7 @@ const reset = () => {};
       <input type="text" id="src" v-model="cat.src" />
     </div>
     <div class="flex justify-end mt-8">
-      <button type="submit" class="btn primary">
+      <button type="submit" class="btn primary" :disabled="catValidate">
         {{ mode === "edit" ? "Editer" : "Ajouter" }}
       </button>
       <button type="reset" class="btn cancel ml-6">Annuler</button>
